@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     public float health = 5000f;
     private bool singleFire = true;
     private bool reloading = false;
+    public float laserColor = 0.5f;
 
     //Health variables
     bool hp75mark = false;
@@ -30,7 +31,8 @@ public class PlayerController : MonoBehaviour
     //private Vector3 shipPosition;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         float zdepth = transform.position.z - Camera.main.transform.position.z;
         healthMax = health;
 
@@ -42,13 +44,18 @@ public class PlayerController : MonoBehaviour
         cam_left = Camera.main.ViewportToWorldPoint(new Vector3(0f + padding, 0f, zdepth));
         cam_right = Camera.main.ViewportToWorldPoint(new Vector3(1f - padding, 0f, zdepth));
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         /*
         if (Input.GetKeyDown(KeyCode.Space)) { InvokeRepeating("Shooting", Time.deltaTime, playerFiringRate * Time.deltaTime); }
         if (Input.GetKeyUp(KeyCode.Space)) { CancelInvoke("Shooting"); }
         */
+
+        //Color laser
+        laserColorChange();
+
 
         //Pew pew
         if (Input.GetKey(KeyCode.Space))
@@ -75,7 +82,7 @@ public class PlayerController : MonoBehaviour
             //shipPosition.x -= speed * Time.deltaTime;
             //this.transform.position = shipPosition;
             transform.position += Vector3.left * speed * Time.deltaTime;
-            x_clamped = Mathf.Clamp(transform.position.x,cam_left.x, cam_right.x);
+            x_clamped = Mathf.Clamp(transform.position.x, cam_left.x, cam_right.x);
             transform.position = new Vector3(x_clamped, transform.position.y, transform.position.z);
         }
         else if (Input.GetKey(KeyCode.RightArrow))
@@ -104,6 +111,7 @@ public class PlayerController : MonoBehaviour
         {
             GameObject beam = Instantiate(playerProjectile, transform.position + new Vector3(0f, 0f, 0f), Quaternion.identity) as GameObject;
             beam.GetComponent<Rigidbody2D>().velocity = new Vector3(0f, playerProjectileSpeed, 0f);
+            beam.GetComponent<SpriteRenderer>().color = Color.HSVToRGB(laserColor, 1f, 1f);
         }
         else
         {
@@ -111,6 +119,9 @@ public class PlayerController : MonoBehaviour
             GameObject beam2 = Instantiate(playerProjectile, transform.position + new Vector3(-0.5f, 0f, 0f), Quaternion.identity) as GameObject;
             beam2.GetComponent<Rigidbody2D>().velocity = new Vector3(0f, playerProjectileSpeed, 0f);
             beam.GetComponent<Rigidbody2D>().velocity = new Vector3(0f, playerProjectileSpeed, 0f);
+
+            beam.GetComponent<SpriteRenderer>().color = Color.HSVToRGB(laserColor, 1f, 1f);
+            beam2.GetComponent<SpriteRenderer>().color = Color.HSVToRGB(laserColor, 1f, 1f);
         }
     }
 
@@ -182,4 +193,30 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+
+    // Change the color of the laser
+
+    void laserColorChange()
+    {
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            laserColor += 0.01f;
+        }
+        else if (Input.GetKey(KeyCode.DownArrow))
+        {
+            laserColor -= 0.01f;
+        }
+
+        if (laserColor < 0f)
+        {
+            laserColor = 0f;
+        }
+        if (laserColor > 1f)
+        {
+            laserColor = 0.999f;
+        }
+    }
+
+
 }

@@ -15,4 +15,14 @@ public class Projectile : MonoBehaviour {
     {
         Destroy(gameObject);
     }
+
+    public float getH()
+    {
+        float H;
+        float S;
+        float V;
+        Color.RGBToHSV(this.GetComponent<SpriteRenderer>().color, out H, out S, out V);
+
+        return H;
+    }
 }

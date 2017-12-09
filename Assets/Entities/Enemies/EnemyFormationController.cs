@@ -149,6 +149,7 @@ public class EnemyFormationController : MonoBehaviour
 
     void RespawnUntilFull()
     {
+        
         Transform freePosition = NextFreePosition();
         //instantiate returns an object ; make it return a gameobject instead
         if (freePosition != null)
@@ -169,6 +170,11 @@ public class EnemyFormationController : MonoBehaviour
             Vector3 pos = new Vector3(posx, posy, 0);
             child.transform.localPosition = pos;
             GameObject enemy = Instantiate(enemyPrefab, pos, Quaternion.identity) as GameObject;
+
+            //Change enemy color
+            enemy.GetComponent<SpriteRenderer>().color = Color.HSVToRGB(Random.value, 1f, 1f);
+            //
+
             enemy.transform.parent = child;
         }
     }

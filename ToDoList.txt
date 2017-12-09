@@ -1,0 +1,30 @@
+TO DO
+
+ 
+Rédaction dossier Game Design
+Système de bonus si formation ennemie détruite 
+Interface
+Ajout débris ennemie/ astéroïde
+Design Boss 
+
+
+Victor : 
+fct : 	Changements de couleur Ennemie
+							 Laser 
+		Fonction HSL -> Longueurs d'onde 
+		Fonction de dégâts
+		Curseur de couleur dans L'UI
+	   
+	   
+	   
+	   
+Benjamin : 	Création Formations
+			Animation Formations
+			Compteur Vague 
+			Ajout Son/Musique
+			
+			
+			
+
+			
+Objectif : 10 minutes Gameplay/1 niveau

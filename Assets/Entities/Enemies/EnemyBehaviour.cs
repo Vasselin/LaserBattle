@@ -14,6 +14,9 @@ public class EnemyBehaviour : MonoBehaviour
     public float enemyFiringRate = 0.5f;
     private float prob;
 
+    //Damage parameters
+    public float sigma = 0.1f;
+
     //Hitpoint variables
     bool hp75mark = false;
     bool hp50mark = false;
@@ -37,7 +40,6 @@ public class EnemyBehaviour : MonoBehaviour
     {
         prob = Time.deltaTime * enemyFiringRate;
         if (Random.value < prob) { Shooting(); }
-        //InvokeRepeating("Shooting", 0.0001f, enemyFiringRate * Time.deltaTime * 10f);
 
         SparklesRemover();
     }
@@ -54,7 +56,11 @@ public class EnemyBehaviour : MonoBehaviour
             //Destroy the projectile
             Vector3 projectilePos = projectile.transform.position;
             projectile.Hit();
+
             //Lower health
+
+
+            //health -= DamageTaken(projectile.GetDamage(), projectile.getH());
             health -= projectile.GetDamage();
             //Check damage and apply graphic effects accordingly
             healthPercent = health / healthMax * 100;
@@ -99,6 +105,11 @@ public class EnemyBehaviour : MonoBehaviour
     {
         //Pew pew
         GameObject beam = Instantiate(enemyProjectile, transform.position + new Vector3(0f,0f,0f), Quaternion.identity) as GameObject;
+       
+        //Change beam color
+        beam.GetComponent<SpriteRenderer>().color = this.GetComponent<SpriteRenderer>().color;
+        //
+
         beam.GetComponent<Rigidbody2D>().velocity = new Vector3(0f, enemyProjectileSpeed, 0f);
     }
 
@@ -117,5 +128,19 @@ public class EnemyBehaviour : MonoBehaviour
                 }
             }
         }
+    }
+
+
+    private float DamageTaken(float projectileDamage, float projectileH)
+    {
+        float damageTaken = 0f;
+        float H;
+        float S;
+        float V;
+        Color.RGBToHSV(this.GetComponent<SpriteRenderer>().color,out H,out S,out V);
+        damageTaken = Mathf.Exp( ( projectileH - H)* (projectileH - H) / (2 * sigma * sigma) );
+        damageTaken *= projectileDamage / (sigma * Mathf.Sqrt(2 * Mathf.PI));
+        Debug.Log(damageTaken);
+        return damageTaken;
     }
 }
