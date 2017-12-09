@@ -15,7 +15,8 @@ public class EnemyBehaviour : MonoBehaviour
     private float prob;
 
     //Damage parameters
-    public float sigma = 0.1f;
+    //
+    public float sigma = 0.05f;
 
     //Hitpoint variables
     bool hp75mark = false;
@@ -60,8 +61,9 @@ public class EnemyBehaviour : MonoBehaviour
             //Lower health
 
 
-            //health -= DamageTaken(projectile.GetDamage(), projectile.getH());
-            health -= projectile.GetDamage();
+            health -= DamageTaken(projectile.GetDamage(), projectile.getH());
+            //health -= projectile.GetDamage();
+
             //Check damage and apply graphic effects accordingly
             healthPercent = health / healthMax * 100;
             if (healthPercent <= 75 && !hp75mark)
@@ -138,9 +140,13 @@ public class EnemyBehaviour : MonoBehaviour
         float S;
         float V;
         Color.RGBToHSV(this.GetComponent<SpriteRenderer>().color,out H,out S,out V);
-        damageTaken = Mathf.Exp( ( projectileH - H)* (projectileH - H) / (2 * sigma * sigma) );
-        damageTaken *= projectileDamage / (sigma * Mathf.Sqrt(2 * Mathf.PI));
-        Debug.Log(damageTaken);
-        return damageTaken;
+
+
+        damageTaken = Mathf.Exp(- ( projectileH - H) * (projectileH - H) / (2 * sigma * sigma) );
+
+        
+        Debug.Log(damageTaken*projectileDamage);
+
+        return damageTaken * projectileDamage;
     }
 }

@@ -97,11 +97,9 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator ShootTest()
     {
-        Debug.Log("Order to shoot");
         Shooting();
         reloading = true;
         yield return new WaitForSecondsRealtime(playerFiringRate);
-        Debug.Log("Ready to shoot again");
         reloading = false;
     }
 
