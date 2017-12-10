@@ -10,12 +10,19 @@ public class EnemyBehaviour : MonoBehaviour
     public GameObject deathExplosion;
     public GameObject hitByPlayer;
     public GameObject smokeDueToDamage;
+
+
     public float enemyProjectileSpeed = -15f;
     public float enemyFiringRate = 0.5f;
     private float prob;
 
+    //PowerUp Parameter
+    public GameObject Shield;
+    public GameObject DoubleShoot;
+    public float randPowerUp;
+
+
     //Damage parameters
-    //
     public float sigma = 0.05f;
 
     //Hitpoint variables
@@ -48,9 +55,9 @@ public class EnemyBehaviour : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Projectile projectile = collision.gameObject.GetComponent<Projectile>();
+
         if (projectile)
         {
-            Debug.Log("Hit by a projectile");
             //Sparkle effect at the location of the projectile
             GameObject hitSparkles = Instantiate(hitByPlayer, projectile.transform.position + new Vector3(0f, 0.4f, -0.1f), Quaternion.identity) as GameObject;
             hitSparkles.transform.parent = gameObject.transform;
@@ -62,7 +69,6 @@ public class EnemyBehaviour : MonoBehaviour
 
 
             health -= DamageTaken(projectile.GetDamage(), projectile.getH());
-            //health -= projectile.GetDamage();
 
             //Check damage and apply graphic effects accordingly
             healthPercent = health / healthMax * 100;
@@ -88,6 +94,22 @@ public class EnemyBehaviour : MonoBehaviour
                 GameObject explosion = Instantiate(deathExplosion, transform.position, Quaternion.identity) as GameObject;
                 explosion.GetComponent<Rigidbody2D>().velocity = new Vector3(0f, enemyProjectileSpeed, 0f);
                 scoreKeeper.ScoreUpdate(scoreValue);
+
+
+                //Generate a random PowerUp
+                if (Random.value < randPowerUp)
+                {
+                    Vector3 pos = transform.position;
+                    if (Random.value < 0.5)
+                    {
+                        GameObject PU = Instantiate(Shield, pos, Quaternion.identity) as GameObject;
+                    }
+                    else
+                    {
+                        GameObject PU = Instantiate(DoubleShoot, pos, Quaternion.identity) as GameObject;
+                    }
+
+                }
                 Destroy(gameObject);
             }
         }
@@ -141,11 +163,7 @@ public class EnemyBehaviour : MonoBehaviour
         float V;
         Color.RGBToHSV(this.GetComponent<SpriteRenderer>().color,out H,out S,out V);
 
-
         damageTaken = Mathf.Exp(- ( projectileH - H) * (projectileH - H) / (2 * sigma * sigma) );
-
-        
-        Debug.Log(damageTaken*projectileDamage);
 
         return damageTaken * projectileDamage;
     }

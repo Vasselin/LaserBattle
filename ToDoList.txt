@@ -1,4 +1,4 @@
-TO DO
+﻿TO DO
 
  
 Rédaction dossier Game Design
@@ -8,23 +8,23 @@ Ajout débris ennemie/ astéroïde
 Design Boss 
 
 
-Victor : 
-fct : 	Changements de couleur Ennemie
-							 Laser 
+Victor :  
 		Fonction HSL -> Longueurs d'onde 
-		Fonction de dégâts
 		Curseur de couleur dans L'UI
+		Power-up
+
 	   
 	   
 	   
 	   
 Benjamin : 	Création Formations
-			Animation Formations
-			Compteur Vague 
-			Ajout Son/Musique
+		Animation Formations
+		Compteur Vague 
+
 			
 			
-			
+
+Paul : 		Musique/son
 
 			
 Objectif : 10 minutes Gameplay/1 niveau

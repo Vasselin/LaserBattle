@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    //Level Manager
+    private LevelManager levelManager;
+
     //Shooting variables
     public GameObject playerProjectile;
     public GameObject hitByEnemy;
@@ -36,6 +39,7 @@ public class PlayerController : MonoBehaviour
         float zdepth = transform.position.z - Camera.main.transform.position.z;
         healthMax = health;
 
+        levelManager = GameObject.FindObjectOfType<LevelManager>();
         /*
         shipPosition = this.transform.position;
         this.transform.position = shipPosition;
@@ -72,6 +76,8 @@ public class PlayerController : MonoBehaviour
         SparklesRemover();
         //Move
         Moving();
+
+       
     }
 
     void Moving()
@@ -126,10 +132,15 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Projectile projectile = collision.gameObject.GetComponent<Projectile>();
+
+        PowerUp powerUp = collision.gameObject.GetComponent<PowerUp>();
+
         if (projectile)
         {
-            Debug.Log("Player hit by a projectile");
+
             //Sparkle effect at the location of the projectile
+            singleFire = true;
+
             GameObject hitSparkles = Instantiate(hitByEnemy, projectile.transform.position + new Vector3(0f, 0.4f, -0.1f), Quaternion.identity) as GameObject;
             hitSparkles.transform.parent = gameObject.transform;
             //Destroy the projectile
@@ -160,8 +171,27 @@ public class PlayerController : MonoBehaviour
                 //EXPLOOOOOSION
                 GameObject explosion = Instantiate(deathExplosion, transform.position, Quaternion.identity) as GameObject;
                 explosion.GetComponent<Rigidbody2D>().velocity = new Vector3(0f, -playerProjectileSpeed, 0f);
+
+                levelManager.LoadLevel("Loose Screen");
                 Destroy(gameObject);
+}
+        }
+
+
+        if (powerUp)
+        {
+            
+            if ( powerUp.getPowerUp() == "DoubleShoot")
+            {
+                singleFire = false;
+                
             }
+            else
+            {
+                Debug.Log("Shield");
+            }
+            powerUp.Hit();
+
         }
     }
 
@@ -208,11 +238,11 @@ public class PlayerController : MonoBehaviour
 
         if (laserColor < 0f)
         {
-            laserColor = 0f;
+            laserColor = 0.999f;
         }
         if (laserColor > 1f)
         {
-            laserColor = 0.999f;
+            laserColor = 0f;
         }
     }
 

@@ -157,7 +157,6 @@ public class EnemyFormationController : MonoBehaviour
             GameObject enemy = Instantiate(enemyPrefab, freePosition.position, Quaternion.identity) as GameObject;
             enemy.transform.parent = freePosition;
             Invoke("RespawnUntilFull", 50.0f * Time.deltaTime);
-            Debug.Log(50.0f * Time.deltaTime);
         }
     }
 
