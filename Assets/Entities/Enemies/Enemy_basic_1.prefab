@@ -184,9 +184,12 @@ MonoBehaviour:
     type: 2}
   smokeDueToDamage: {fileID: 1001413530386226, guid: 092610b3cdfce5c46a3727d10b006d77,
     type: 2}
-  powerUp: {fileID: 1773380464345468, guid: 05604f9ad500a7942aa9a791294a177a, type: 2}
   enemyProjectileSpeed: -15
   enemyFiringRate: 0.8
+  Shield: {fileID: 1773380464345468, guid: 05604f9ad500a7942aa9a791294a177a, type: 2}
+  DoubleShoot: {fileID: 1779363468403268, guid: 630589b8c17a492488126c445f4073dd,
+    type: 2}
+  randPowerUp: 1
   sigma: 0.05
   scoreValue: 150
 --- !u!198 &198386996171693230

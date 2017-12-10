@@ -31,7 +31,9 @@ public class PlayerController : MonoBehaviour
     private Vector3 cam_left; //left camera boundary
     private Vector3 cam_right; //right camera boundary
     public float padding = 0.02f; //offset to the boundaries
-    //private Vector3 shipPosition;
+
+    //Shield
+    public GameObject Shield;
 
     // Use this for initialization
     void Start()
@@ -52,11 +54,6 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*
-        if (Input.GetKeyDown(KeyCode.Space)) { InvokeRepeating("Shooting", Time.deltaTime, playerFiringRate * Time.deltaTime); }
-        if (Input.GetKeyUp(KeyCode.Space)) { CancelInvoke("Shooting"); }
-        */
-
         //Color laser
         laserColorChange();
 
@@ -76,6 +73,7 @@ public class PlayerController : MonoBehaviour
         SparklesRemover();
         //Move
         Moving();
+
 
        
     }
@@ -128,6 +126,7 @@ public class PlayerController : MonoBehaviour
             beam2.GetComponent<SpriteRenderer>().color = Color.HSVToRGB(laserColor, 1f, 1f);
         }
     }
+    
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -188,7 +187,8 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                Debug.Log("Shield");
+                GameObject shield = Instantiate(Shield, this.transform.position, Quaternion.identity) as GameObject;
+                shield.transform.parent = gameObject.transform;
             }
             powerUp.Hit();
 
@@ -245,6 +245,5 @@ public class PlayerController : MonoBehaviour
             laserColor = 0f;
         }
     }
-
 
 }
