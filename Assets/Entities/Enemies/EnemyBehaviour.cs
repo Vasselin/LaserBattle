@@ -67,8 +67,8 @@ public class EnemyBehaviour : MonoBehaviour
 
             //Lower health
 
-
-            health -= DamageTaken(projectile.GetDamage(), projectile.getH());
+            health -= projectile.GetDamage();
+            //health -= DamageTaken(projectile.GetDamage(), projectile.getH());
 
             //Check damage and apply graphic effects accordingly
             healthPercent = health / healthMax * 100;

@@ -21,6 +21,7 @@ public class Shield : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        /*
         Projectile projectile = collision.gameObject.GetComponent<Projectile>();
         health -= projectile.GetDamage();
         projectile.Hit();
@@ -32,7 +33,7 @@ public class Shield : MonoBehaviour {
         }
 
 
-
+    */
 
     }
 }

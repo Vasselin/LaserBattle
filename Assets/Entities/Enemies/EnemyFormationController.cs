@@ -13,8 +13,8 @@ public class EnemyFormationController : MonoBehaviour
     private Vector3 cam_left; //left camera boundary
     private Vector3 cam_right; //right camera boundary
     private bool hasStarted = false;
-    private bool left_edge_reached = false;
-    private bool right_edge_reached = true;
+    private bool left_edge_reached;
+    private bool right_edge_reached;
     public float padding = 0.02f; //offset to the boundaries
 
     // Use this for initialization
@@ -45,7 +45,20 @@ public class EnemyFormationController : MonoBehaviour
         cam_left = Camera.main.ViewportToWorldPoint(new Vector3(0f + padding, 0f, zdepth));
         cam_right = Camera.main.ViewportToWorldPoint(new Vector3(1f - padding, 0f, zdepth));
 
-        StartCoroutine(Example());
+        //Start direction
+        if (Random.value > 0.5)
+        {
+            left_edge_reached = false;
+            right_edge_reached = true;
+        }
+        else
+        {
+            left_edge_reached = true;
+            right_edge_reached = false;
+        }
+
+        //StartCoroutine(Example());
+        Respawn();
     }
 
     private void OnDrawGizmos()
@@ -57,7 +70,8 @@ public class EnemyFormationController : MonoBehaviour
     void Update()
     {
         Moving();
-        if (EmptyFormation() && hasStarted) { RespawnTest(); }
+        //if (EmptyFormation() && hasStarted) { RespawnTest(); }
+        //if (EmptyFormation()) { Respawn(); }
     }
 
     void Moving()
@@ -137,6 +151,16 @@ public class EnemyFormationController : MonoBehaviour
         return null;
     }
 
+    public bool IsFormationEmpty()
+    {
+        return EmptyFormation();
+    }
+
+    public bool IsFormationInstantiated()
+    {
+        return hasStarted;
+    }
+
     void Respawn()
     {
         foreach (Transform child in transform)
@@ -144,12 +168,17 @@ public class EnemyFormationController : MonoBehaviour
             //instantiate returns an object ; make it return a gameobject instead
             GameObject enemy = Instantiate(enemyPrefab, child.transform.position, Quaternion.identity) as GameObject;
             enemy.transform.parent = child;
+
+            //Change enemy color
+            enemy.GetComponent<SpriteRenderer>().color = Color.HSVToRGB(Random.value, 1f, 1f);
+            //
+            hasStarted = true;
         }
     }
 
     void RespawnUntilFull()
     {
-        
+
         Transform freePosition = NextFreePosition();
         //instantiate returns an object ; make it return a gameobject instead
         if (freePosition != null)
@@ -164,8 +193,8 @@ public class EnemyFormationController : MonoBehaviour
     {
         foreach (Transform child in transform)
         {
-            float posx = Mathf.Round(((Random.value * width) - (width / 2))*2)/2;
-            float posy = Mathf.Round(((Random.value * height) - (height / 2))*2)/2;
+            float posx = Mathf.Round(((Random.value * width) - (width / 2)) * 2) / 2;
+            float posy = Mathf.Round(((Random.value * height) - (height / 2)) * 2) / 2;
             Vector3 pos = new Vector3(posx, posy, 0);
             child.transform.localPosition = pos;
             GameObject enemy = Instantiate(enemyPrefab, pos, Quaternion.identity) as GameObject;
@@ -175,6 +204,7 @@ public class EnemyFormationController : MonoBehaviour
             //
 
             enemy.transform.parent = child;
+            hasStarted = true;
         }
     }
 
