@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HitSparkles : MonoBehaviour {
+public class HitSparkles : MonoBehaviour
+{
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    private IEnumerator Start()
+    {
+        yield return new WaitForSeconds(GetComponent<ParticleSystem>().main.duration);
+        Destroy(gameObject);
+    }
 }
+

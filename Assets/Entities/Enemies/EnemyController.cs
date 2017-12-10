@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBehaviour : MonoBehaviour
+public class EnemyController : MonoBehaviour
 {
     //Shooting variables
     public float health = 150;
@@ -48,8 +48,7 @@ public class EnemyBehaviour : MonoBehaviour
     {
         prob = Time.deltaTime * enemyFiringRate;
         if (Random.value < prob) { Shooting(); }
-
-        SparklesRemover();
+        
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -61,6 +60,8 @@ public class EnemyBehaviour : MonoBehaviour
             //Sparkle effect at the location of the projectile
             GameObject hitSparkles = Instantiate(hitByPlayer, projectile.transform.position + new Vector3(0f, 0.4f, -0.1f), Quaternion.identity) as GameObject;
             hitSparkles.transform.parent = gameObject.transform;
+            hitSparkles.transform.Rotate(new Vector3(0, 0, 75));
+
             //Destroy the projectile
             Vector3 projectilePos = projectile.transform.position;
             projectile.Hit();
@@ -95,7 +96,6 @@ public class EnemyBehaviour : MonoBehaviour
                 explosion.GetComponent<Rigidbody2D>().velocity = new Vector3(0f, enemyProjectileSpeed, 0f);
                 scoreKeeper.ScoreUpdate(scoreValue);
 
-
                 //Generate a random PowerUp
                 if (Random.value < randPowerUp)
                 {
@@ -110,6 +110,7 @@ public class EnemyBehaviour : MonoBehaviour
                     }
 
                 }
+
                 Destroy(gameObject);
             }
         }
@@ -135,23 +136,6 @@ public class EnemyBehaviour : MonoBehaviour
         //
 
         beam.GetComponent<Rigidbody2D>().velocity = new Vector3(0f, enemyProjectileSpeed, 0f);
-    }
-
-    void SparklesRemover()
-    {
-        //Destroy sparkle effects when they've been displayed
-        HitSparkles isThereHitSparkles = gameObject.GetComponent<HitSparkles>();
-        if (isThereHitSparkles)
-        {
-            foreach (Transform child in transform)
-            {
-                ParticleSystem hitSparkle = child.GetComponent<ParticleSystem>();
-                if (!hitSparkle.IsAlive())
-                {
-                    Destroy(hitSparkle);
-                }
-            }
-        }
     }
 
 

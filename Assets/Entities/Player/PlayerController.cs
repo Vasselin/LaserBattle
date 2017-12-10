@@ -12,12 +12,12 @@ public class PlayerController : MonoBehaviour
     public GameObject hitByEnemy;
     public GameObject deathExplosion;
     public GameObject smokeDueToDamage;
-    public float playerProjectileSpeed = 15f;
+    private float playerProjectileSpeed = 30f;
     private float playerFiringRate = 0.10f; //in seconds
     public float health = 5000f;
     private bool singleFire = true;
     private bool reloading = false;
-    public float laserColor = 0.5f;
+    public float laserColor = 0.02f;
 
     //Health variables
     bool hp75mark = false;
@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
 
     //Shield
     public GameObject Shield;
+    private bool shielded = false;
 
     // Use this for initialization
     void Start()
@@ -68,9 +69,7 @@ public class PlayerController : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.S)) { singleFire = !singleFire; }
-
-        //Save memory by deleting unused sparkle effects
-        SparklesRemover();
+        
         //Move
         Moving();
 
@@ -136,44 +135,52 @@ public class PlayerController : MonoBehaviour
 
         if (projectile)
         {
+            //Check if shielded
 
-            //Sparkle effect at the location of the projectile
-            singleFire = true;
+            if (!shielded)
+            {
+                singleFire = true;
 
-            GameObject hitSparkles = Instantiate(hitByEnemy, projectile.transform.position + new Vector3(0f, 0.4f, -0.1f), Quaternion.identity) as GameObject;
-            hitSparkles.transform.parent = gameObject.transform;
-            //Destroy the projectile
-            Vector3 projectilePos = projectile.transform.position;
-            projectile.Hit();
-            //Lower health
-            health -= projectile.GetDamage();
-            //Check damage and apply graphic effects accordingly
-            healthPercent = health / healthMax * 100;
-            if (healthPercent <= 75 && !hp75mark)
-            {
-                hp75mark = true;
-                SmokeDueToDamage();
-            }
-            else if (healthPercent <= 50 && !hp50mark)
-            {
-                hp50mark = true;
-                SmokeDueToDamage();
-            }
-            else if (healthPercent <= 25 && !hp25mark)
-            {
-                hp25mark = true;
-                SmokeDueToDamage();
-            }
-            //Check death
-            if (health <= 0)
-            {
-                //EXPLOOOOOSION
-                GameObject explosion = Instantiate(deathExplosion, transform.position, Quaternion.identity) as GameObject;
-                explosion.GetComponent<Rigidbody2D>().velocity = new Vector3(0f, -playerProjectileSpeed, 0f);
+                //Sparkle effect at the location of the projectile
+                Vector3 pos = projectile.transform.position + new Vector3(0f, -0.4f, -0.1f);
+                GameObject hitSparkles = Instantiate(hitByEnemy, pos, Quaternion.identity) as GameObject;
 
-                levelManager.LoadLevel("Loose Screen");
-                Destroy(gameObject);
-}
+                hitSparkles.transform.parent = gameObject.transform;
+                hitSparkles.transform.Rotate(new Vector3(0, 0, 255));
+
+                //Destroy the projectile
+                Vector3 projectilePos = projectile.transform.position;
+                projectile.Hit();
+                //Lower health
+                health -= projectile.GetDamage();
+                //Check damage and apply graphic effects accordingly
+                healthPercent = health / healthMax * 100;
+                if (healthPercent <= 75 && !hp75mark)
+                {
+                    hp75mark = true;
+                    SmokeDueToDamage();
+                }
+                else if (healthPercent <= 50 && !hp50mark)
+                {
+                    hp50mark = true;
+                    SmokeDueToDamage();
+                }
+                else if (healthPercent <= 25 && !hp25mark)
+                {
+                    hp25mark = true;
+                    SmokeDueToDamage();
+                }
+                //Check death
+                if (health <= 0)
+                {
+                    //EXPLOOOOOSION
+                    GameObject explosion = Instantiate(deathExplosion, transform.position, Quaternion.identity) as GameObject;
+                    explosion.GetComponent<Rigidbody2D>().velocity = new Vector3(0f, -playerProjectileSpeed, 0f);
+
+                    levelManager.LoadLevel("Loose Screen");
+                    Destroy(gameObject);
+                }
+            }
         }
 
 
@@ -185,14 +192,20 @@ public class PlayerController : MonoBehaviour
                 singleFire = false;
                 
             }
-            else
+            else if (powerUp.getPowerUp() == "Shield" && !shielded)
             {
                 GameObject shield = Instantiate(Shield, this.transform.position, Quaternion.identity) as GameObject;
                 shield.transform.parent = gameObject.transform;
+                shielded = true;
             }
             powerUp.Hit();
 
         }
+    }
+
+    public void BrokenShield()
+    {
+        shielded = false;
     }
 
     void SmokeDueToDamage()
@@ -204,24 +217,6 @@ public class PlayerController : MonoBehaviour
         GameObject smoke = Instantiate(smokeDueToDamage, hitPos, Quaternion.identity) as GameObject;
         smoke.transform.parent = gameObject.transform;
     }
-
-    void SparklesRemover()
-    {
-        //Destroy sparkle effects when they've been displayed
-        HitSparkles isThereHitSparkles = gameObject.GetComponent<HitSparkles>();
-        if (isThereHitSparkles)
-        {
-            foreach (Transform child in transform)
-            {
-                ParticleSystem hitSparkle = child.GetComponent<ParticleSystem>();
-                if (!hitSparkle.IsAlive())
-                {
-                    Destroy(hitSparkle);
-                }
-            }
-        }
-    }
-
 
     // Change the color of the laser
 
